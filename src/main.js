@@ -6,9 +6,11 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import './custom.css'
 import store from './store/Index'
 
+
 Vue.config.productionTip = false;
 Vue.use(BootstrapVue);
 Vue.use(require('vue-moment'));
+
 
 new Vue({
   store,

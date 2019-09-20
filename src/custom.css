@@ -45,3 +45,11 @@ body{
 #userFooter .col-4{
     text-align: right;
 }
+
+.datepicker input{
+    border: 0;
+}
+
+.display-block{
+    display: block;
+}

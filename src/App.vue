@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <h1>Twubrics App</h1>
-    <h5>Rubrics for your Twitter Followers!</h5>
+    <h1 class="text-left">Twubrics App</h1>
+    <h5 class="text-left">Rubrics for your Twitter Followers!</h5>
     <MainList />
   </div>
 </template>
