@@ -1,5 +1,7 @@
 # Twubrics 
 
+Check out the live demo here: [Live Demo](https://amansharma007.github.io/twubrics/)
+
 ## Project setup
 ```
 yarn install
