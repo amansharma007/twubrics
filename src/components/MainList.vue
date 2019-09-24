@@ -3,7 +3,7 @@
     <div class="row form-group">
       <div class="col-4">
         <label class="float-left mt-5"> <strong>Sort By:</strong></label>
-        <select v-model="sortType" @change="sortList" class="custom-select form-control custom-select float-left mb-5">
+        <select v-model="sortType" class="custom-select form-control custom-select float-left mb-5">
           <option value="0">Select a sorting option</option>
           <option value="1">Twubric Score</option>
           <option value="2">Friends</option>
@@ -44,9 +44,7 @@
 
 <script>
 import Card from './app-components/Card.vue'
-import { mapState } from 'vuex'
-import axios from 'axios'
-import config from '../config.js'
+import { mapState, mapGetters } from 'vuex'
 import Datepicker from 'vuejs-datepicker'
 import moment from 'moment'
 
@@ -63,52 +61,45 @@ export default {
       endDate: 0
     }
   },
+  watch: {
+    startDate(newVal, oldVal){
+      this.$store.commit('setStartDate', newVal);
+    },
+    endDate(newVal, oldVal){
+      this.$store.commit('setEndDate', newVal);
+    },
+    sortType(newVal, oldVal){
+      this.$store.commit('setSortType', newVal);
+      this.profiles = this.getSortedProfiles;
+    }
+  },
   computed: {
-    ...mapState({
-      profiles: function(state){
-        var profiles = state.profiles.profiles;
-        if(this.startDate && this.endDate){
-          let startDate = moment(new Date(this.startDate)).format("MMMM DD, YYYY");
-          let endDate = moment(new Date(this.endDate)).format("MMMM DD, YYYY");
-          console.log("see the dates", startDate, endDate);
-            return profiles.filter((el) =>{
-              let jD = moment(new Date(el.join_date * 1000)).format("MMMM DD, YYYY");
-              return moment(jD).isBetween(startDate, endDate)
-            });
-        } else {
-          return profiles;
+    ...mapGetters({
+      getSortedProfiles: 'getSortedProfiles'
+    }),
+    profiles: {
+        get: function(){
+          return this.$store.getters.getProfiles;
+        },
+        set: function(newVal){
+          return newVal
         }
-        
-      } 
-    })
+    }
   },
   methods: {
     removeCurrent: function(index){
       this.profiles.splice(index, 1);
     },
-    sortList(){
-      switch(this.sortType){
-        case '0': this.profiles.sort((a,b) => a.uid > b.uid ? 1 : -1); break;
-        case '1': this.profiles.sort((a,b) => a.twubric.total > b.twubric.total ? 1 : -1); break;
-        case '2': this.profiles.sort((a,b) => a.twubric.friends > b.twubric.friends ? 1 : -1); break;
-        case '3': this.profiles.sort((a,b) => a.twubric.influence > b.twubric.influence ? 1 : -1); break;
-        case '4': this.profiles.sort((a,b) => a.twubric.chirpiness > b.twubric.chirpiness ? 1 : -1); break;
-      }
-    },
     resetEverything(){
       this.startDate = null;
       this.endDate = null;
       this.sortType = '0';
-      this.sortList('0');
     }
   },
   created() {
-    var self = this;
-    axios.get(config.profileAPIEndpoint)
-        .then(function(response){
-            console.log("This is the response", response);
-            self.$store.commit('setProfiles', response.data);
-        })
+    this.$store.dispatch('loadProfiles')
+    
+    
   }  
 }
 </script>
